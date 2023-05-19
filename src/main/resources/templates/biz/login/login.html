@@ -1,0 +1,46 @@
+<h1>Login</h1>
+<form action="/login" method="post">
+    <div>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" />
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" />
+    </div>
+    <div>
+        <input type="submit" value="Login" />
+    </div>
+</form>
+
+<div>
+    <div>
+        인증이 되었는지 확인합니다.
+    </div>
+    <button id="btnUnAuth">인증 테스트</button>
+</div>
+<script>
+
+
+
+window.addEventListener("load", function() {
+
+    document.getElementById("btnUnAuth").addEventListener("click", function() {
+        // SpringSecurity가 제대로 적용이 되는지 확인한다. 
+        Ajax.html("/demo/board/index", {
+            method: "GET",
+            headers: {
+                "Content-Type": "text/html"
+            }
+        }).then(function(response) {
+            console.log(response);
+        });
+    });
+
+});
+
+
+
+
+
+</script>

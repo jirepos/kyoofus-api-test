@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>public/ test html</h1>
+    <script>
+
+      var superObj = function(obj) {
+        this.data = obj; 
+        this.display = function() {
+            console.log("Supser display()");
+        },
+        this.speak  = function() {
+            console.log("Super speak()");
+        }
+    }
+
+    var subObj = function(obj) {
+        superObj.call(this, obj);
+        this.display = function() {
+            console.log("Sub display()");
+        }
+    }
+
+    var data = { 
+        name: "Hong"
+    }
+
+    var obj = new subObj(data);
+    obj.display();
+
+    </script>
+    
+</body>
+</html>

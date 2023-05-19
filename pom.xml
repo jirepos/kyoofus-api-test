@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.jirepo</groupId>
+		<artifactId>jirepo-api</artifactId>
+		<version>1.0.0</version>
+		<!-- https://www.baeldung.com/maven-relativepath -->
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<artifactId>jirepo-demo</artifactId>
+	<packaging>war</packaging>
+	<properties>
+		<java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+	</properties>
+
+
+	<dependencies>
+
+        <!-- https://jeong-pro.tistory.com/160 -->
+		<!-- "스프링 부트 애플리케이션에서 제공하는 여러가지 정보를 모니터링 -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jirepo</groupId>
+			<artifactId>jirepo-framework</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+				<source>${maven.compiler.source}</source>
+				<target>${maven.compiler.source}</target>
+				</configuration>
+			</plugin>		
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

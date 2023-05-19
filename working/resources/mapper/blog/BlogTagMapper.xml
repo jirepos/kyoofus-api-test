@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sogood.biz.blog.mapper.BlogTagMapper">
+
+
+  <select id="selectBlogTags" parameterType="string" resultType="com.sogood.biz.blog.vo.BlogTagVo">
+    SELECT tag_id, tag_name, blog_id
+     FROM  blog_tag 
+     WHERE blog_id = #{blogId}
+  </select>
+
+  <select id="selectBlogTagName" parameterType="com.sogood.biz.blog.vo.BlogTagVo" resultType="com.sogood.biz.blog.vo.BlogTagVo">
+    SELECT tag_id, tag_name, blog_id
+     FROM  blog_tag 
+     WHERE blog_id = #{blogId}
+     AND   tag_name = #{tagName}
+  </select>
+  
+  
+  <insert id="insertTag" parameterType="com.sogood.biz.blog.vo.BlogTagVo">
+    INSERT INTO blog_tag (
+      tag_id,
+      tag_name,
+      blog_id 
+    ) VALUES (
+      #{tagId},
+      #{tagName},
+      #{blogId}
+    )
+  </insert>
+
+  <delete id="deleteTag" parameterType="string">
+    DELETE FROM blog_tag WHERE tagId = #{tagId}
+  </delete>
+
+
+  <delete id="deleteUnusedTag" parameterType="string">
+    delete from blog_tag 
+    where tag_id in ( 
+                      select tag_id 
+                      from blog_tag A 
+                      where A.blog_id = #{blogId}  
+                      and not exists (  select 1
+                                        from blog_post B
+                                        where B.blog_id = #{blogId}
+                                        and instr(B.tag_names, A.tag_name) > 0    
+                                      )
+                     ) 
+  </delete>
+
+</mapper>

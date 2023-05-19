@@ -1,0 +1,20 @@
+[
+  {
+    "name": "com.jirepo.core.web.interceptor.BtestInterceptor",
+    "description": "",
+    "includes": [ "/**"],
+    "excludes": []
+  },
+  {
+    "name": "com.jirepo.core.web.interceptor.AuthCheckInterceptor",
+    "description": "",
+    "includes": [ "/**"],
+    "excludes": []
+  },
+  {
+    "name": "com.jirepo.core.web.interceptor.ForwardInterceptor",
+    "description": "",
+    "includes": [ "/**"],
+    "excludes": []
+  }
+]

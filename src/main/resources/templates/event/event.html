@@ -1,0 +1,47 @@
+<h1>Spring Event Handling</h1>
+
+
+<button id="btnJson1">Get JSON  #1</button>
+<button id="btnJson2">Get JSON  #2</button>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        let btnHtml1 = document.querySelector('#btnJson1');
+        btnHtml1.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                //url: '/demo/event/get-json?q=' + encodedParams,
+                url: '/demo/event/get-json1',
+                headers: {
+                    Accept: 'application/json',           // 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지, 나에게 JSON을 보내줘 
+                    'Content-Type': 'application/json',   // 서버에 어떤 형식의 데이터를 보내는지 알려줌, 나는 JSON을 보낼게
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+
+        let btnHtml2 = document.querySelector('#btnJson2');
+        btnHtml2.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                //url: '/demo/event/get-json?q=' + encodedParams,
+                url: '/demo/event/get-json2',
+                headers: {
+                    'Content-Type': 'application/json',   // json을 보낼거야.  서버에 어떤 형식의 데이터를 보내는지 알려줌
+                    'Accept': 'application/json',         // json으로 반환해줘. 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+    });
+</script>

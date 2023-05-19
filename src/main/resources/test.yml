@@ -1,0 +1,5 @@
+user:
+    name: devson
+    age: 20
+ 
+test: This is test string for snake yaml

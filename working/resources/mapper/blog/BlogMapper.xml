@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sogood.biz.blog.mapper.BlogMapper">
+
+
+  <select id="selectBlog" parameterType="string" resultType="com.sogood.biz.blog.vo.BlogVo">
+    SELECT blog_id, blog_name, user_id 
+      FROM blog
+     WHERE blog_id = #{blogId}
+  </select>
+
+
+  <select id="selectUserBlogs" parameterType="string" resultType="com.sogood.biz.blog.vo.BlogVo">
+    SELECT blog_id, blog_name, user_id 
+      FROM blog
+     WHERE user_id = #{userId}
+  </select>
+  
+  <insert id="inserBlog" parameterType="com.sogood.biz.blog.vo.BlogVo">
+    INSERT INTO blog (
+      blog_id, 
+      blog_name,
+      user_id
+     ) VALUES (
+      #{blogId},
+      #{blogName},
+      #{userId}
+    )
+  </insert>
+  
+</mapper>

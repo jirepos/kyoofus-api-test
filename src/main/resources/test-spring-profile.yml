@@ -1,0 +1,46 @@
+server-url: http://localhost:8080
+login-page: /login 
+login-option:
+  - normal
+  - facebook
+  - google
+first-value: 5.5   
+cors-enable: true
+server:
+  port: 8080
+  servlet:
+    context-path: /spring-test
+
+
+
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - "classpath:test-sub.yml"
+      - "classpath:test-sub2.yml"
+      
+
+server-url: http://localhost:9090
+jdbc:
+  url: jdbc:mysql://localhost:3306/local
+  username: your_db_username
+  password: your_db_password
+  driver-class-name: com.mysql.jdbc.Driver
+guest-url: http://localhost:8080,http://localhost:9999,http://localhost:4200
+
+---
+spring:
+  config:
+    activate:
+      on-profile: od
+
+jdbc:
+  url: jdbc:mysql://localhost:3306/your_od
+  username: your_db_usernameLOCAL
+  password: your_db_password
+  driver-class-name: com.mysql.jdbc.Driver

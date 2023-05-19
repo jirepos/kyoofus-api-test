@@ -1,0 +1,279 @@
+<body>
+    <button id="btnAdd">저장</button>
+    <button id="btnRead">읽기</button>
+    <button id="btnDelete">삭제</button>
+    <button id="btnDeleteDB">DB삭제</button>    
+    <button id="btnClear">Object Storage 데이터 전체 삭제</button>    
+    <button id="btnDelObjectStorage">Object Storage 삭제</button>    
+
+    <script>
+
+        window.addEventListener('load', () => {
+
+            // IndexedDB에 저장할 객체 
+            let person = {
+                id: 1 ,  // ID가 키 
+                name: "Hong", 
+                age: 10
+            }
+        
+
+            // 브라우저는 여러개의 Database를 가질 수 있다. 
+            // Database는 Version 정보가 있고, 여러개의 ObjectStore를 가질 수 있다.
+            // Database 수정 시에는 Version을 수정해야 한다. 
+            // indexeddb 지원 여부 
+            if(window.indexedDB) {
+                console.log("indexedDB is supported");
+            } else {
+                console.log("indexedDB is not supported");
+            }
+
+            // https://lcs1245.tistory.com/entry/IndexedDB-%EC%82%AC%EC%9A%A9%EB%B2%95-%EC%A0%95%EB%A6%AC
+            // indexedDB 이름
+            let dbName = "indexDbName"; 
+            // 버전 
+            let version = 1; 
+            // DB 객체 
+            let db = null; 
+            let request = null; 
+
+            // indexedDB.open(db_name, veriosn) 함수로 Database를 열도록 요청한다. 
+            // IDBOpenDBRequest를 구한다. 
+            request = window.indexedDB.open(dbName, version);
+            // 새로 만들거나 버전이 높을 때만 발생하는 이벤트 
+            // ObjectStore를 만들거나 수정할 때 이 이벤트에서 진행
+            // onsuccess는 이 이벤트가 끝나야 발생한다. 
+            request.onupgradeneeded = function(event) {
+                debugger; 
+                console.log(event);
+                db = event.target.result;
+                // createObjectStore(name, options)
+                // parameters
+                //   keyPath : 새로운 object store에 의해 사용된다. 값이 없으면 key path 없이 사용된다. 
+                //   autoIncrement : true or false (default: false), true이면 key generator를 갖는다 
+                // Returns : IDBObjectStore 객체
+                // 각 객체에 유일성을 부여하기 위해서는 keyPath를 정의해야 한다. 
+                if(event.oldVersion < 1) {
+                    // 처음 db를 오픈하면 oldVersion은 0이다. 
+                    // event.oldVersion으로 이전 버전의 값 
+                    // event.newVersion으로 현재 버전의 값을 확인할 수 있다. 
+                    let objectStore = db.createObjectStore("person", {keyPath: "id"});  // person 저장소를 만들고 key는 id으로 지정 
+                }else {
+                    db.deleteObjectStore('person');
+                    let objectStore = db.createObjectStore("person", {keyPath: "id"});  // person 저장소를 만들고 key는 id으로 지정 
+                }
+            }
+            // Databasse 열기 실패 
+            request.onerror = function(event) {
+                console.log("Error: Database open failed");
+            }
+            // 열린 Database에 접근하기 위해 이벤트를 받는다.
+            request.onsuccess = function(event) {
+                db = request.result;
+            }
+
+
+            /**
+             * 데이터를 ObjectStrage에 저장하는 함수
+             */
+            const addDataIntoObjectStorage = () => {
+                // person ObjectStore에 readWrite(읽기, 쓰기) 권한으로 transaction 생성 
+                let transaction = db.transaction(["person"], "readwrite");
+
+                // transaction 성공시 
+                transaction.onsuccess = function(event) {
+                    console.log("success");
+                }
+                // transaction 실패시 
+                transaction.onerror = function(event) {
+                    console.log("transaction error");
+                }
+
+                // store에 추가 
+                let objectStore = transaction.objectStore("person");
+                let req = objectStore.add(person);
+                req.onsuccess = function(event) {
+                    console.log("success");
+                    console.log(event.target.result);
+                }
+            }// writeDB 
+
+
+            /**
+             * ObjectStrage에서 데이터를 읽어오는 함수
+             */
+            const readDataFromObjectStorage = () => {
+                // person ObjectStore에 readOnly(읽기) 권한으로 transaction 생성 
+                let transaction = db.transaction(["person"], "readonly");
+                // transaction 성공시 
+                transaction.onsuccess = function(event) {
+                    console.log("success");
+                }
+                // transaction 실패시 
+                transaction.onerror = function(event) {
+                    console.log("transaction error");
+                }
+                // store에 추가 
+                let objectStore = transaction.objectStore("person");
+                let req = objectStore.get(1); // key를 id로 설정을 해 놓았기 때문에, id=1인 값을 찾는다. 
+                req.onsuccess = function(event) {
+                    console.log("success");
+                    console.log(event.target.result);
+                }
+            }// readDB
+
+
+
+            /**
+             * ObjectStrage에서 모든 데이터를 삭제하는 함수
+             */
+            const clearObjectStorage = () => {
+                // person ObjectStore에 readOnly(읽기) 권한으로 transaction 생성 
+                let transaction = db.transaction(["person"], "readwrite");
+                // transaction 성공시 
+                transaction.onsuccess = function(event) {
+                    console.log("success");
+                }
+                // transaction 실패시 
+                transaction.onerror = function(event) {
+                    console.log("transaction error");
+                }
+                // store에 추가 
+                let objectStore = transaction.objectStore("person");
+                let req = objectStore.clear(); // 전체 삭제
+                req.onsuccess = function(event) {
+                    console.log("success");
+                }
+            }// readDB            
+
+
+            /**
+             * ObjectStrage의 데이터를 수정하는 함수
+             */
+            const updateDataOfObjectStorage = () => {
+                // person ObjectStore에 readOnly(읽기) 권한으로 transaction 생성 
+                let transaction = db.transaction(["person"], "readwrite");
+                // transaction 성공시 
+                transaction.onsuccess = function(event) {
+                    console.log("success");
+                }
+                // transaction 실패시 
+                transaction.onerror = function(event) {
+                    console.log("transaction error");
+                }
+                // store에 추가 
+                let objectStore = transaction.objectStore("person");
+                let req = objectStore.get(1); // key를 id로 설정을 해 놓았기 때문에, id=1인 값을 찾는다. 
+                req.onsuccess = function(event) {
+                    console.log("success");
+                    console.log(event.target.result);
+                    // 찾은 값을 수정한다.
+                    let updateData = event.target.result;
+                    updateData.name = "Hong 2"; // 이름을 변경한다.
+                    let updateRequest = objectStore.put(updateData); // 수정한 값을 저장한다.
+                    updateRequest.onsuccess = function(event) {
+                        console.log("success");
+                    }
+                    updateRequest.onerror = function(event) {
+                        console.log("error");
+                    }
+                }
+
+            }// readDB
+
+            
+
+            /**
+             * ObjectStrage의 데이터를 삭제하는 함수
+             */
+            const deleteDataFromObjectStorage = () => {
+                // person ObjectStore에 readOnly(읽기) 권한으로 transaction 생성 
+                let transaction = db.transaction(["person"], "readwrite");
+                // transaction 성공시 
+                transaction.onsuccess = function(event) {
+                    console.log("success");
+                }
+                // transaction 실패시 
+                transaction.onerror = function(event) {
+                    console.log("transaction error");
+                }
+
+                let objectStore = transaction.objectStore("person");
+                let deleteRequest = objectStore.delete(1); // person objectstore에 있는 id값 1을 삭제한다.
+                deleteRequest.onsuccess = function(event) {
+                    console.log("success");
+                }
+            }// deleteData
+
+            
+
+            /**
+             * DB 자체를 삭제 
+             */
+            const deleteDB = () => {
+                db.close(); // 먼저 open한 DB를 닫아준다.
+                let delReq = window.indexedDB.deleteDatabase("indexDbName");
+                delReq.onsuccess = function(event) {
+                    console.log("success");
+                }
+                delReq.onerror = function(event) {
+                    console.log("error");
+                }
+
+            }// deleteDB
+            
+
+
+            /**
+             * ObjecStorage 삭제 
+             */
+             const deleteObjectStorage = () => {
+                let delReq = db.deleteObjectStorage("person");
+                delReq.onsuccess = function(event) {
+                    console.log("success");
+                }
+
+            }// deleteDB
+
+
+            // ObjectStorage에 저장
+            let btnAdd = document.querySelector('#btnAdd');
+            btnAdd.addEventListener('click', () => {
+                addDataIntoObjectStorage();
+            });
+
+            // ObjectStorage에서 읽기
+            let btnRead = document.querySelector('#btnRead');
+            btnRead.addEventListener('click', () => {
+                readDataFromObjectStorage();
+            });
+            
+            // ObjectStorage에서 읽기
+            let btnDelete = document.querySelector('#btnDelete');
+            btnDelete.addEventListener('click', () => {
+                deleteDataFromObjectStorage();
+            });
+            // DB 삭제
+            let btnDeleteDB = document.querySelector('#btnDeleteDB');
+            btnDeleteDB.addEventListener('click', () => {
+                deleteDB();
+            });
+
+
+            // Objedct Storage 데이터 전체  삭제
+            let btnClear = document.querySelector('#btnClear');
+            btnClear.addEventListener('click', () => {
+                clearObjectStorage();
+            });            
+
+           // Objedct Storage 삭제
+           let btnDelObjectStorage = document.querySelector('#btnDelObjectStorage');
+           btnDelObjectStorage.addEventListener('click', () => {
+                deleteObjectStorage();
+           
+            });                  
+        });
+    </script>
+</body>
+
+ 

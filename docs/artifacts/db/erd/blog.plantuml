@@ -1,0 +1,56 @@
+@startuml
+
+scale 1
+title Blog 블로그
+ 
+' uncomment the line below if you're using computer with a retina display
+' skinparam dpi 300
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+' we use bold for primary key
+' green color for unique
+' and underscore for not_null
+!define primary_key(x) <b>x</b>
+!define unique(x) <color:green>x</color>
+!define not_null(x) <u>x</u>
+' other tags available:
+' <i></i>
+' <back:COLOR></color>, where color is a color name or html color code
+' (#FFAACC)
+' see: http://plantuml.com/classes.html#More
+hide methods
+hide stereotypes
+ 
+' entities
+
+
+Table(blog,  "blog\n(Blog)") {
+primary_key(blog_id) VARCHAR[100]
+blog_name VARCHAR[100]
+user_id VARCHAR[100]
+}
+
+Table(blog_tag,  "blog_tag\n(Tag)") {
+primary_key(tag_id) VARCHAR[100]
+tag_name VARCHAR[100]
+blog_id VARCHAR[100]
+}
+
+
+Table(blog_post,  "blog_post\n(Post)") {
+primary_key(post_id) VARCHAR[100]
+blog_id VARCHAR[100]
+post_title VARCHAR[100]
+file_name VARCHAR[100]
+file_ext VARCHAR[20]
+tag_names VARCHAR2[200]
+reg_dt TIMESTAMP
+upd_dt TIMESTAMP
+}
+
+Table(blog_tag_post,  "blog_tag_post\n(Tag to Post)") {
+primary_key(tag_id) VARCHAR[100]
+primary_key(post_id) VARCHAR[100]
+}
+
+
+@enduml

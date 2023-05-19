@@ -1,0 +1,46 @@
+<body>
+    <button id="btnAdd">LocalStorage에 저장하기</button>
+    <button id="btnExist">LocalStorage에 저장된 데이터 확인</button>
+    <button id="btnDelete">LocalStorage에 저장된 데이터 삭제</button>
+    <script>
+        window.addEventListener('load', () => {
+
+            let person = {
+                name: "Hong", 
+                age: 10
+            }
+
+            // Storage 인 Local Storage 와 Session Storage 는 최대 10MB 만 저장이 가능하며, 오직 String 형태만 저장이 가능하다.
+
+            // 로컬 스토리지에 저장하기
+            let btnAdd = document.querySelector('#btnAdd');
+            btnAdd.addEventListener('click', () => {
+                window.localStorage.setItem('person', JSON.stringify(person) );
+            });
+
+
+            // 로컬 스토리지에 저장된 값 확인하기
+            let btnExist = document.querySelector('#btnExist');
+            btnExist.addEventListener('click', () => {
+                let savedData = window.localStorage.getItem('person');
+                if(savedData) {
+                    let oneperson = JSON.parse(savedData);
+                    console.log(oneperson);
+                }
+            });
+
+
+            // 로컬 스토리지에 저장된 값 삭제하기
+            let btnDelete = document.querySelector('#btnDelete');
+            btnDelete.addEventListener('click', () => {
+                let savedData = window.localStorage.getItem('person');
+                if(savedData) {
+                    window.localStorage.removeItem('person');
+                }
+            });
+
+        });
+    </script>
+</body>
+
+ 

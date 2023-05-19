@@ -1,0 +1,249 @@
+<body>
+    <button id="btnAdd">데이터 추가</button>
+    <button id="btnRandom">난수생셩</button>
+    <button id="btnDiffTime">시간계산</button>
+
+    <script>
+        /**
+         * IndexDB 사용하기 위한 클래스이다.
+         */
+        class IndexDB {
+            window = null;
+            dbName = null;
+            version = 0;
+
+            /**
+             * 생성자이다.
+             * @param window  window  객체
+             * @param dbName Database 이름
+             * @param version Database 버전. 버전은 정수로 입력
+             */
+            constructor(window, dbName, version) {
+                this.window = window;
+                this.dbName = dbName; // 데이터베이스 이름
+                this.version = version; // 데이터베이스 버전
+                this.db = null; // 데이터베이스 객체
+            }
+
+            /**
+             * 데이터베이스를 오픈한다. 이전 버전보다 높은 버전이 주어지면 이전 버전의 ObjectStorage를 삭제하고
+             * 다시 생성한다.
+             * @param ObjectStorageName ObjectStorage 이름
+             * @param path ObjectStorage에서 데이타의 Unique Key 이름
+             */
+            open(objectStorageName, path) {
+                let request = this.window.indexedDB.open(this.dbName, this.version);
+                request.onsuccess = (e) => {
+                    this.db = e.target.result;
+                    console.log('데이터베이스 열기 성공');
+                };
+                request.onerror = (e) => {
+                    console.log('데이터베이스 열기 실패');
+                };
+                request.onupgradeneeded = (e) => {
+                    this.db = e.target.result;
+                    if (event.oldVersion > 0) {
+                        this.db.delteObjectStore(objectStorageName);
+                    }
+                    this.db.createObjectStore(objectStorageName, { keyPath: path });
+                    console.log('데이터베이스 업그레이드');
+                };
+            } // open
+
+            /**
+             * Database를 삭제한다.
+             */
+            deleteDB() {
+                this.db.close();
+                let request = this.window.indexedDB.deleteDatabase(this.dbName);
+                let returnVal = true;
+                request.onsuccess = function (event) {
+                    returnVal = true;
+                    console.log('success');
+                };
+                request.onerror = function (event) {
+                    returnVal = false;
+                    console.log('error');
+                };
+            } // deleteDB
+
+            /**
+             * ObjectStorate를 삭제한다.
+             * @param objectStorageName ObjectStorage 이름
+             */
+            deleteObjectStorage(objectStorageName) {
+                this.db.deleteObjectStore(objectStorageName);
+                console.log('ObjectStorage 삭제');
+            } // deleteObjectStorage
+
+            /**
+             * 데이터를 삽입한다.
+             * @param objectStorageName ObjectStorage 이름
+             * @param key Unique Key 이름
+             */
+            insert(objectStorageName, data) {
+                let transaction = this.db.transaction([objectStorageName], 'readwrite');
+                let objectStore = transaction.objectStore(objectStorageName);
+                let request = objectStore.add(data);
+                let returnVal = true;
+                request.onsuccess = (e) => {
+                    returnVal = true;
+                    console.log('데이터 추가 성공');
+                };
+                request.onerror = (e) => {
+                    returnVal = false;
+                    console.log('데이터 추가 실패');
+                };
+                return returnVal;
+            } // insert
+
+            /**
+             * 데이터를 수정한다.
+             * @param objectStorageName ObjectStorage 이름
+             * @param key Unique Key 이름
+             */
+            update(objectStorageName, data) {
+                let transaction = this.db.transaction([objectStorageName], 'readwrite');
+                let objectStore = transaction.objectStore(objectStorageName);
+                let request = objectStore.put(data);
+                let returnVal = true;
+                request.onsuccess = (e) => {
+                    returnVal = true;
+                    console.log('데이터 업데이트 성공');
+                };
+                request.onerror = (e) => {
+                    returnVal = false;
+                    console.log('데이터 업데이트 실패');
+                };
+                return returnVal;
+            } // update
+
+            /**
+             * @param objectStorageName ObjectStorage 이름
+             * @param key Unique Key 이름
+             */
+            delete(objectStorageName, key) {
+                let transaction = this.db.transaction([objectStorageName], 'readwrite');
+                let objectStore = transaction.objectStore(objectStorageName);
+                let request = objectStore.delete(key);
+                let returnVal = true;
+                request.onsuccess = (e) => {
+                    console.log('데이터 삭제 성공');
+                    leturnVal = true;
+                };
+                request.onerror = (e) => {
+                    console.log('데이터 삭제 실패');
+                    returnVal = false;
+                };
+                return returnVal;
+            } // delete
+
+            /**
+             * 모든 데이타를 삭제한다.
+             * @param objectStorageName ObjectStorage 이름
+             */
+            deleteAll(objectStorageName) {
+                let transaction = this.db.transaction([objectStorageName], 'readwrite');
+                let objectStore = transaction.objectStore(objectStorageName);
+                let request = objectStore.clear();
+                let returnVal = true;
+                request.onsuccess = (e) => {
+                    console.log('데이터 삭제 성공');
+                    returnVal = true;
+                };
+                request.onerror = (e) => {
+                    console.log('데이터 삭제 실패');
+                    returnVal = false;
+                };
+                return returnVal;
+            } // deleteAll
+
+            /**
+             * 데이터를 조회한다.
+             *
+             * @param objectStorageName ObjectStorage 이름
+             * @param key ObjectStorage에서 데이타의 Unique Key 이름
+             */
+            select(objectStorageName, key) {
+                let transaction = this.db.transaction([objectStorageName], 'readwrite');
+                let objectStore = transaction.objectStore(objectStorageName);
+                let request = objectStore.get(key); // 조회
+                let returnVal = null;
+                request.onsuccess = (e) => {
+                    returnVal = e.target.result;
+                    console.log('데이터 조회 성공');
+                };
+                request.onerror = (e) => {
+                    console.log('데이터 조회 실패');
+                };
+                return returnVal;
+            } // select
+        } // IndexDB
+
+        let db = new IndexDB(window, 'testDB', 1);
+        db.open('testData', "id"); // id로 key를 사용한다.
+
+
+        let oldVal = Date.now();
+
+
+        /**
+         * 난수 생성
+         */
+        const random = (min, max) => {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        const diff = ( oldVal, newVal) => { 
+            let diff = newVal - oldVal;
+            // let compVal = 60 * 10; // 10분 
+            console.log(diff);
+            let compVal = 60 * 1000; // 1분
+            if(diff > compVal) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+         
+
+
+        window.addEventListener('load', () => {
+
+            
+            let btnAdd = document.getElementById('btnAdd');
+            btnAdd.addEventListener('click', () => {
+                let item = { 
+                    id: 4, 
+                    name: '아이템1',
+                    price: 1000
+                }
+                db.insert('testData', item);
+
+            });
+
+
+
+
+
+
+
+
+            let btnRandom = document.getElementById('btnRandom');
+            btnRandom.addEventListener('click', () => {
+                console.log('난수 생성');
+                console.log(random(0,10));
+            });            
+            let btnDiffTime = document.getElementById('btnDiffTime');
+            btnDiffTime.addEventListener('click', () => {
+                console.log('시간차이 계산');
+
+                let newVal = Date.now();
+                console.log(diff(oldVal, newVal));
+                oldVal = newVal;
+            });        
+
+
+        });
+    </script>
+</body>

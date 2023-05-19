@@ -1,0 +1,3 @@
+# 2.4 주요 변경사항으로 include 는 특정 profile 이 적용된 곳에서는 사용할 수 없다. 
+# 때문에 on-profile 과 include 가 공존할 수 없다. 다음과 같이 사용하면 사용 할 수 있다.
+user: sogood

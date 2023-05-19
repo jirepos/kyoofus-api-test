@@ -1,0 +1,206 @@
+<style>
+  .en-container { 
+    display: flex; 
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px;
+  }
+  .flex-left { 
+    width: 400px; 
+  } 
+</style>
+<h1>@ResponseEntity Demo</h1>
+<hr />
+<div class="en-container">
+    <div class="flex-left">
+        <button id="btnText" type="button" class="btn btn-primary">text/plain 요청하기</button>
+        <button id="btnHtml" type="button" class="btn btn-primary">text/html 요청하기</button>
+        <button id="btnJson" type="button" class="btn btn-primary">JSON(applicatin/json) 요청하기</button>
+        <button id="btnPath" type="button" class="btn btn-primary">@PathVariable 사용</button>
+        <button id="btnReqParam" type="button" class="btn btn-primary">@RequestParam 사용</button>
+        <button id="btnReqBody" type="button" class="btn btn-primary">@RequstBody 사용</button>
+        <button id="btnModelAttr" type="button" class="btn btn-primary">@ModelAttribute 사용</button>
+        <button id="btnImageDown" type="button" class="btn btn-primary">이미지 다운로드</button>
+        <button id="btnImageDownOctet" type="button" class="btn btn-primary">이미지 다운로드. octet-stream 사용</button>
+        <button id="btnFileDown" type="button" class="btn btn-primary">File Download. octet-stream 사용</button>
+    </div>
+    <div id="output"></div>
+    <div id="imgout"></div>
+</div>
+<script>
+    const log = (msg) => {
+        let output = document.querySelector('#output');
+        let div = document.createElement('div');
+        div.innerHTML = msg;
+        output.appendChild(div);
+    };
+
+    window.addEventListener('load', () => {
+        // Text 요청 테스트
+        let btnHtml = document.querySelector('#btnHtml');
+        btnHtml.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-html',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+
+        // HTML 요청 테스트
+        let btnText = document.querySelector('#btnText');
+        btnText.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-text',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+
+        // JSON 요청 테스트
+        let btnJson = document.querySelector('#btnJson');
+        btnJson.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-json',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(JSON.stringify(response));
+                })
+                .catch((error) => {});
+        }); //:
+
+        // @PathVariable 테스트
+        let btnPath = document.querySelector('#btnPath');
+        btnPath.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/path-variable/30/홍길동',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(JSON.stringify(response));
+                })
+                .catch((error) => {});
+        }); //:
+
+        // @ReqeustParam 테스트
+        let btnReqParam = document.querySelector('#btnReqParam');
+        btnReqParam.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/request-param?age=30&name=홍길동',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(JSON.stringify(response));
+                })
+                .catch((error) => {});
+        }); //:
+
+        // @RequestBody 테스트
+        let btnReqBody = document.querySelector('#btnReqBody');
+        btnReqBody.addEventListener('click', () => {
+            let options = {
+                method: 'POST',
+                url: '/demo/res-entity/request-body',
+                body: {
+                    userId: 'a123',
+                    userName: '홍길동',
+                    age: 30,
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(JSON.stringify(response));
+                })
+                .catch((error) => {});
+        }); //:
+
+        // @ModelAttribute 테스트
+        let btnModelAttr = document.querySelector('#btnModelAttr');
+        btnModelAttr.addEventListener('click', () => {
+            let options = {
+                method: 'POST',
+                url: '/demo/res-entity/model-attribute?userId=a123&userName=홍길동&age=30',
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(JSON.stringify(response));
+                })
+                .catch((error) => {});
+        }); //:
+        // 이미지 다운로드  테스트
+        let btnImageDown = document.querySelector('#btnImageDown');
+        btnImageDown.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-image',
+            };
+            ajax(options)
+                .then((response) => {
+                    let img = document.createElement('img'); // image element 생성
+                    document.querySelector('#imgout').append(img); // 생성한 요소를 body에 추가
+                    img.src = URL.createObjectURL(response); // 이미지 소스
+                })
+                .catch((error) => {});
+        }); //:
+
+        // octet-stream 사용 이미지 다운로드  테스트
+        let btnImageDownOctet = document.querySelector('#btnImageDownOctet');
+        btnImageDownOctet.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-image-octet',
+            };
+            ajax(options)
+                .then((response) => {
+                    let img = document.createElement('img'); // image element 생성
+                    document.querySelector('#imgout').append(img); // 생성한 요소를 body에 추가
+                    img.src = URL.createObjectURL(response); // 이미지 소스
+                })
+                .catch((error) => {});
+        }); //:
+
+        // octet-stream 사용 파일 다운로드 테스트
+        let btnFileDown = document.querySelector('#btnFileDown');
+        btnFileDown.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/res-entity/get-image-octet',
+            };
+            ajax(options)
+                .then((response) => {
+                    debugger;
+                    // Blob 객체를 url로 만들때는 URL.createObjectURL() (opens new window)이 메소드를 사용.
+                    //const url  = window.URL.createObjectURL(new Blob(respone));
+                    const url = window.URL.createObjectURL(response);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    // download를 추가하면, 웹브라우저의 설정에 상관없이 링크 대상을 다운로드합니다.
+                    // <a href="images/image.jpg" download>Go</a>는
+                    // 는 image.jpg 파일을 다운로드합니다.
+                    link.setAttribute('download', 'image.png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch((error) => {});
+        }); //:
+    }); // window.load
+</script>

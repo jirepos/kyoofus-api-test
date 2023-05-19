@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sogood.biz.blog.mapper.BlogPostMapper">
+
+  <select id="selectBlogPosts" parameterType="string" resultType="com.sogood.biz.blog.vo.BlogPostVo">
+    SELECT post_id, post_title, file_name, file_ext, tag_names, blog_id, reg_dt, upd_dt , del_yn
+    FROM   blog_post
+    WHERE  blog_id = #{blogId}
+    ORDER BY reg_dt DESC 
+  </select>
+
+  <select id="selectNextPosts" parameterType="date" resultType="com.sogood.biz.blog.vo.BlogPostVo">
+    SELECT post_id, post_title, file_name, file_ext, tag_names, blog_id, reg_dt, upd_dt, del_yn  
+    FROM   blog_post
+    WHERE  reg_dt <![CDATA[ < ]]> #{regDt}
+    ORDER BY reg_dt DESC 
+    LIMIT  30
+  </select>
+
+  <select id="selectPrevPosts" parameterType="date" resultType="com.sogood.biz.blog.vo.BlogPostVo">
+    SELECT A.* 
+    FROM (
+			SELECT post_id, post_title, file_name, file_ext, tag_names, blog_id, reg_dt, upd_dt , del_yn 
+			    FROM   blog_post 
+			    WHERE  reg_dt <![CDATA[ > ]]>  #{regDt}
+			    order by reg_dt, post_id desc
+			    limit 40
+         ) A
+    order by A.reg_dt desc 
+  </select>
+  
+  <select id="selectPost" parameterType="string" resultType="com.sogood.biz.blog.vo.BlogPostVo">
+    SELECT post_id, post_title, file_name, file_ext, tag_names, blog_id , reg_dt, upd_dt, del_yn 
+    FROM   blog_post
+    WHERE  post_id = #{postId}
+  </select>
+  
+  <select id="selectTagPosts" parameterType="com.sogood.biz.blog.vo.BlogTagVo"  resultType="com.sogood.biz.blog.vo.BlogPostVo">
+    select B.post_id, B.post_title, B.file_name, B.file_ext, B.tag_names, B.blog_id , B.reg_dt, B.upd_dt, B.del_yn
+    from (
+           select tag_id, post_id, blog_id 
+           from blog_tag_post 
+           where blog_id = #{blogId}
+           and tag_id = #{tagId} 
+         ) A,
+         blog_post B 
+    where A.post_id = B.post_id 
+  </select>
+  
+
+  <insert id="insertPost" parameterType="com.sogood.biz.blog.vo.BlogPostVo">
+    INSERT INTO blog_post (
+      post_id, 
+      post_title,
+      file_name, 
+      file_ext,
+      tag_names, 
+      blog_id, 
+      reg_dt,
+      upd_dt,
+      del_yn 
+     ) VALUES (
+      #{postId},
+      #{postTitle},
+      #{fileName},
+      #{fileExt},
+      #{tagNames},
+      #{blogId},
+      #{regDt},
+      #{updDt},
+      #{delYn}
+    )
+  </insert>
+  <update id="updatePost" parameterType="com.sogood.biz.blog.vo.BlogPostVo">
+    UPDATE blog_post SET 
+      post_title = #{postTitle},
+      tag_names = #{tagNames},
+      upd_dt = #{updDt}
+    WHERE post_id = #{postId}
+  </update>
+
+  <delete id="deletePost" parameterType="string">
+    DELETE FROM blog_post WHERE post_id = #{postId}
+  </delete>
+
+</mapper>

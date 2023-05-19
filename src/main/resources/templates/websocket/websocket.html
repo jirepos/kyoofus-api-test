@@ -1,0 +1,83 @@
+<body>
+    <div id="chatMessage"></div>
+    <div>
+        <input type="text" id="txtMessage" placeholder="Input text" />
+        <br />
+        <button id="btnSend">Send</button>
+        <button id="btnServerSend">Server에서 웹소켓으로 메시지 전송</button>
+    </div>
+
+    <script>
+        // ws : 일반 webSocket
+        // wss : SSL이 적용된 webSocket(HTTPS)
+        console.log(window.location.protocol); 
+        let protocol =  (window.location.protocol.includes('http'))? 'ws' : 'wss';
+        let endPoint =  protocol   + '://jirepos.com/websocket/chat';  // 'ws://jirepos.com/websocket/chat';
+        // let endPoint = 'wss://jirepos.com/websocket/chat';
+        let socket = new WebSocket(endPoint);
+        socket.onopen = function (event) {
+            console.log('Connected to: ' + endPoint);
+            socket.send('My Name is Hong');
+        };
+        socket.onmessage = function (event) {
+            console.log(event.data); // 서버로 부터 받은 데이터
+            // json인 경우에는  JSON.parse(event.data); 로 파싱해서 사용
+            document.getElementById('chatMessage').innerHTML += event.data + '<br>';
+        };
+        socket.onclose = function (event) {
+            // Common Code
+            // 1000 default, normal closure
+            // 1006 abnormal closure. 수동으로 코드를 설정할 방법이 없음. 비정상적인 종료
+            // 1001 참여자가 자리 비움(going away)
+            // 1009 처리하기에 너무 큰 메시지
+            // 1011 서버에서 예기치 않은 예러
+            if (event.wasClean) {
+                console.log('커넥션이 정상적으로 종료되었다.');
+                console.log(event.code + ': ' + event.reason);
+            } else {
+                // 프로세스가 죽거나 네트워크에 장애가 있는 경우
+                console.log('커넥션이 비정상적으로 종료되었다.');
+            }
+        };
+        socket.onerror = function (error) {
+            console.log(error.message);
+        };
+
+        /** 소켓 커넥션을 종료한다. */
+        const closeConnection = () => {
+            // socket.close([code], [reason]);
+            // 1000 default, normal closure
+            socket.close(1000, '커넥션을 종료합니다.');
+        };
+        // Connection State
+        // socket.readyState property
+        // 0 – “CONNECTING”: the connection has not yet been established,
+        // 1 – “OPEN”: communicating,
+        // 2 – “CLOSING”: the connection is closing,
+        // 3 – “CLOSED”: the connection is closed.
+
+        window.addEventListener('load', () => {
+            let btnSend = document.querySelector('#btnSend');
+            btnSend.addEventListener('click', () => {
+                let txtMessage = document.querySelector('#txtMessage');
+                // json인 경우에는  JSON.stringify({message: txtMessage.value}); 로 파싱해서 사용
+                socket.send(txtMessage.value);
+                txtMessage.value = '';
+            });
+
+            let btnServerSend = document.querySelector('#btnServerSend');
+            btnServerSend.addEventListener('click', () => {
+                let options = {
+                    method: 'GET',
+                    url: '/demo/websocket/server-send',
+                };
+                ajax(options)
+                    .then((response) => {
+                        console.log(response);
+                        log(response);
+                    })
+                    .catch((error) => {});
+            });
+        });
+    </script>
+</body>

@@ -1,0 +1,4 @@
+messenger-domain: "https://messenger.com"
+messageer-port: 443
+jdbc:
+  url: jdbc:mysql://localhost:3306/sub

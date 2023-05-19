@@ -1,0 +1,79 @@
+<body>
+    <div>
+        <div>
+            <h1>CookieUtils.java 테스트</h1>
+            <div>쿠키를 추가한다.</div>
+            <div><input id="btnAddCookie" type="button" value="btnAddCookie" /></div>
+            <div>쿠키값을 읽는다..</div>
+            <div><input id="btnGetCookieValue" type="button" value="btnGetCookieValue" /></div>
+            <div>모든 쿠키값을 읽는다.</div>
+            <div><input id="btnAllCookie" type="button" value="btnAllCookie" /></div>
+            <div>쿠키 삭제</div>
+            <div><input id="btnDelCookie" type="button" value="btnDelCookie" /></div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            // Cookie 추가
+            let btnAddCookie = document.querySelector('#btnAddCookie');
+            btnAddCookie.addEventListener('click', () => {
+                let options = {
+                    method: 'GET',
+                    url: '/demo/cookie/add-cookie',
+                };
+
+                ajax(options)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {});
+            }); //:
+
+            // Cookie 값 읽기
+            let btnGetCookieValue = document.querySelector('#btnGetCookieValue');
+            btnGetCookieValue.addEventListener('click', () => {
+                let options = {
+                    method: 'GET',
+                    url: '/demo/cookie/get-cookie-value',
+                };
+
+                ajax(options)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {});
+            }); //:
+
+            // 모든 Cookie 값 읽기
+            let btnAllCookie = document.querySelector('#btnAllCookie');
+            btnAllCookie.addEventListener('click', () => {
+                let options = {
+                    method: 'GET',
+                    url: '/demo/cookie/read-all-cookie',
+                };
+
+                ajax(options)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {});
+            }); //:
+
+            // Cookie 삭제
+            let btnDelCookie = document.querySelector('#btnDelCookie');
+            btnDelCookie.addEventListener('click', () => {
+                let options = {
+                    method: 'GET',
+                    url: '/demo/cookie/delete-cookie/testCookie',
+                };
+
+                ajax(options)
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {});
+            }); //:
+        }); // window.load
+    </script>
+</body>

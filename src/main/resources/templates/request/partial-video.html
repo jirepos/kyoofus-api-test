@@ -1,0 +1,48 @@
+<script>
+    document.cookie = 'username=Latte';
+</script>
+<div>
+    <video width="90%" preload="auto" controls="controls">Sorry, your browser doesn't support embedded videos.</video>
+</div>
+<div>
+    <button id="btnLoad" class="btn btn-primary">Video Load</button>
+    <button id="btnReplay" class="btn btn-primary">반복 재생 해제 상태</button>
+    <button id="btnDown" class="btn btn-primary">다운로드</button>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        var video = document.querySelector('video');
+        var button = document.querySelector('#btnReplay');
+        button.addEventListener('click', () => {
+            video.loop = video.loop ? false : true;
+            if (video.loop) {
+                button.textContent = '반복 재생';
+            } else {
+                button.textContent = '반복 재생 해제 상태';
+            }
+        });
+
+        // 비디오 로드
+        var btnLoad = document.querySelector('#btnLoad');
+        btnLoad.addEventListener('click', (event) => {
+            //var src="/media/gominsi.mp4"
+            var src = '/demo/partial-video/video/gominsi.mp4';
+            var source = document.createElement('source');
+            source.setAttribute('src', src);
+            source.setAttribute('type', 'video/mp4');
+            video.appendChild(source);
+        });
+
+        // 다운로드
+        var btnDown = document.querySelector('#btnDown');
+        btnDown.addEventListener('click', (event) => {
+            if (video.networkState == video.NETWORK_LOADING) {
+                // NETWORK LOADING 상태라면 경고창 표시
+                alert('잠시 후 다시 시도해 주세요.');
+            } else {
+                window.open('/media/gominsi.mp4', 'download');
+            }
+        });
+    });
+</script>

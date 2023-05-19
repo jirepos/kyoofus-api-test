@@ -1,0 +1,56 @@
+<h1>Opengraph Demo</h1>
+<div>
+
+    <div id="fb-root">
+        <button id="btnFetch">클릭하세요</button>
+    </div>
+    <div id="resultDiv">
+        여기에 결과가 표시된다.
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+
+            let btn = document.querySelector("#btnFetch");
+            btn.addEventListener('click', () => {
+                // 버튼이 클릭되었을 때 ogData를 가져와서 image 태그랑 생성한다. 
+                let options = {
+                    method: 'GET',
+                    url: '/demo/opengraph/get-ogdata',
+                    headers: {
+                        Accept: 'application/json', // 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지
+                        'Content-Type': 'application/json', // 서버에 어떤 형식의 데이터를 보내는지 알려줌
+                    },
+                };
+                ajax(options)
+                    .then((response) => {
+                        // html은 디자인팀에 요청합니다. 
+
+                        // 요소들을 생성한다. 
+                        let titleEle = document.createElement('h2');
+                        let descEle = document.createElement('div');
+                        let img     = document.createElement('img');   // 이미지가 없는 경우의 대안을 고려해야 한다. 
+                        let a       = document.createElement('a');
+
+                        // 가져온 값을 설정한다. 
+                        titleEle.innerText = response.title;
+                        descEle.innerText = response.description;
+                        img.src = response.image;
+                        a.href = response.url;
+                        a.text = response.domain;
+                        img.src = response.image;
+
+                        // div에 요소들을 추가한다. 
+                        let resultDiv = document.querySelector("#resultDiv");
+                        resultDiv.append(titleEle);
+                        resultDiv.append(descEle);
+                        resultDiv.append(img);
+                        resultDiv.append(a);
+                    })
+                    .catch((error) => { });
+
+            });
+        });
+    </script>
+
+
+</div>

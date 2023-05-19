@@ -1,0 +1,22 @@
+datasource-configs:
+  # Praimray DB Configuration 
+  primary:
+    datasource:
+      mapper-locations: 
+        - classpath:mappers/primary/**/*.xml
+      #jdbc-url: jdbc:mysql://152.70.237.192:3306/blog?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      jdbc-url: jdbc:mysql://152.70.237.192:3306/lattedb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      #jdbc-url: jdbc:mariadb://127.0.0.1:3306/lattedb?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      #driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: org.mariadb.jdbc.Driver
+      username: latte
+      password: 1234
+  # Secondary DB Configuration 
+  secondary:
+    datasource:
+      mapper-locations:
+        - classpath:mappers/secondary/**/*.xml
+      jdbc-url: jdbc:oracle:thin:@49.247.214.179:1521:naonorcl2
+      driver-class-name: oracle.jdbc.OracleDriver
+      username: mynaongw
+      password: skdhs#Rmfnqdnpdj7

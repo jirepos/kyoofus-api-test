@@ -1,0 +1,48 @@
+<h1>Google API Demo</h1>
+
+
+<button id="btnEvents">기본 캘린더의 이벤트 가져오기</button>
+<button id="btnMailCount">메일카운트 가져오기 가져오기</button>
+
+<script>
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+        let btnHtml = document.querySelector('#btnEvents');
+        btnEvents.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/google/events', 
+                headers: {
+                    Accept: 'application/json', // 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지
+                    'Content-Type': 'application/json', // 서버에 어떤 형식의 데이터를 보내는지 알려줌
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+
+        let btnMailCount = document.querySelector('#btnMailCount');
+        btnMailCount.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                url: '/demo/google/mailcount', 
+                headers: {
+                    Accept: 'text/plain', // 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지
+                    'Content-Type': 'application/json', // 서버에 어떤 형식의 데이터를 보내는지 알려줌
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+
+    });
+</script>

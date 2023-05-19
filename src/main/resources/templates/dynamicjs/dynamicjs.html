@@ -1,0 +1,42 @@
+<h1>Dynamic Javascript Load</h1>
+<div>
+    <button id="btnListPortlet">ListPortlet Load</button>
+    <button id="btnForward">Forward</button> 
+</div>
+
+<script>
+
+    /** 여기에 Porlt class를 등록한다. */ 
+    const PortletRegister = {
+    };
+
+    class AjaxDemoRepository {
+        /** 동적으로 포틀릿을 로드한다. */ 
+        static loadListPortlet() {
+            // db에 포틀릿 js 파일의 경로를 저장하고 
+            // db를 읽어서 실제 경로를 가져오게 한다. 
+            return Ajax.javascript('/demo/ListPortlet.js');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('#btnListPortlet').addEventListener('click', function () {
+            AjaxDemoRepository.loadListPortlet()
+            .then(function (res) {
+                //const listPortlet = new ListPortlet();
+                //listPortlet.render();
+                // 클래스를 인스턴스화 한다. 
+                // refer to the class by name
+                const listPortlet = new PortletRegister['ListPortlet']();
+                listPortlet.render();
+            });
+        });
+        
+
+
+        document.querySelector('#btnForward').addEventListener('click', function () {
+            let page = "/dynamicjs/button-portlet/index";  // 테스트를 위한 button 포틀릿
+            Ajax.forward('/demo/dynamic-js/forward?page=' +  page );
+        });
+    });
+</script>

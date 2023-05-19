@@ -1,0 +1,34 @@
+<form>
+    <input id="fileInput" type="file" name="pics" />
+</form>
+<script>
+    let fileInput = document.querySelector('#fileInput');
+    fileInput.addEventListener('change', (e) => {
+        let files = e.target.files;
+        let file = files[0];
+        console.log(file.size);
+        console.log(file.type);
+        console.log(file.name);
+        let reader = new FileReader();
+        let formData = new FormData();
+        formData.append('uploadFile', file);
+        formData.append('realName', file.name);
+        // ajax test
+        let options = {
+            url: '/demo/file/upload/',
+            method: 'POST',
+            isFileUpload: true,
+            // 폼데이터로 업로드할 때에는 headers가 비어야 한다.
+            headers: {},
+            body: formData,
+        };
+
+        ajax(options)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    });
+</script>

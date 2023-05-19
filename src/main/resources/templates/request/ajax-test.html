@@ -1,0 +1,202 @@
+<div>
+    <h1>Ajax Class Test</h1>
+    <div>
+        <button id="btnJson">Fetch JSON Test</button>
+        <button id="btnJsonAsync">Fetch JSON Async Test</button>
+        <button id="btnText">Fetch TextTest</button>
+        <button id="btnHtml">Fetch HTML Test</button>
+        <button id="btnError">Fetch Error</button>
+        <button id="btnDownload">File Download</button>
+        <button id="btnBlob">Blob Download</button>
+        <button id="btnTimeout">Timeout Test</button>
+        <button id="btnScript">Javascript dynamic load  Test</button>
+    </div>
+    <div>
+      <input id="fileInput" type="file" name="pics" multiple />
+      <button id="btnFileUpload">FileUpload Test</button>
+    </div>
+</div>
+<div id="resultDiv"></div>
+<script>
+
+   class AjaxDemoRepository { 
+         static  getJson() {
+            return  Ajax.json('/demo/res-entity/get-json')
+         }
+         static getText() {
+            return Ajax.text('/demo/res-entity/get-text')
+         }
+         static  getHtml() {
+            return  Ajax.text('/demo/res-entity/get-html')
+         }
+         static  getError() {
+            return  Ajax.json('/demo/fetch/error')
+         }
+         static  download() {
+            return  Ajax.download('/demo/res-entity/get-image');
+         }
+         // upload
+         static  upload(formData) {
+            return  Ajax.upload('/demo/file/multi-upload', { body: formData });
+         }
+         static  blob() {
+            return  Ajax.blob('/demo/res-entity/get-image');
+         }
+         static  timeout() {
+            return  Ajax.json('/demo/res-entity/fetch-timeout', { timeout: 2000});
+         }
+         static javascript() {
+            return Ajax.javascript('/demo/res-entity/fetch-javascript');
+         }
+         static  getJsonUrlencoded() {
+            let data = {
+                name : 'kim', 
+                age: 20
+            }
+            return  Ajax.postJson(
+                '/demo/res-entity/get-json-urlencoded',
+                { 
+                  body : data, 
+                  headers: { 
+                    'Content-Type': Ajax.CONTENT_TYPE_URLENCODED 
+                  } 
+                });
+         }
+   }
+
+
+    window.addEventListener('DOMContentLoaded', function () {
+
+        // json  가져오기 
+        document.getElementById('btnJson').addEventListener('click', function () {
+            Ajax.json('/demo/res-entity/get-json', { method: Ajax.HTTP_METHOD_GET })
+               .then(response => { 
+                  console.log(response); 
+                  console.log(response.userName);
+               })
+               .catch(e => { 
+                   console.log(e);
+               });
+        });
+
+        // json Async 테스트 
+        document.getElementById('btnJsonAsync').addEventListener('click', function () {
+            AjaxDemoRepository.getJsonUrlencoded()
+               .then(response => { 
+                  console.log(response); 
+               })
+               .catch(e => { 
+                   console.log(e);
+               });
+        });
+
+        
+        // html  가져오기 
+        document.getElementById('btnHtml').addEventListener('click', function () {
+            AjaxDemoRepository.getHtml()
+               .then(response => { 
+                  console.log(response); 
+               })
+               .catch(e => { 
+                   console.log(e);
+               });
+        });
+
+
+        // text 가져오기
+        document.getElementById('btnText').addEventListener('click', function () {
+            AjaxDemoRepository.getText()
+               .then(response => { 
+                  console.log(response); 
+               })
+               .catch(e => { 
+                   console.log(e);
+               });
+        });
+
+        // Error 처리 
+        document.getElementById('btnError').addEventListener('click', function () {
+            AjaxDemoRepository.getError()
+               .then(response => { 
+                  console.log(response); 
+               })
+               .catch(e => { 
+                   debugger; 
+                   console.log(e);
+               });
+        });
+
+        // download 
+        document.getElementById('btnDownload').addEventListener('click', function () {
+            AjaxDemoRepository.download()
+               .then(response => { 
+                  console.log(response); 
+               })
+               .catch(e => { 
+                   debugger; 
+                   console.log(e);
+               });
+        });
+        // upload
+         document.getElementById('btnFileUpload').addEventListener('click', function () {
+               let formData = new FormData();
+               let files = document.getElementById('fileInput').files;
+               for (let i = 0; i < files.length; i++) {
+                  formData.append('file', files[i]);
+               }
+               formData.append("content", "hello world");
+
+               AjaxDemoRepository.upload(formData)
+                .then(response => { 
+                     console.log(response); 
+                })
+                .catch(e => { 
+                      debugger; 
+                      console.log(e);
+                });
+         });
+
+
+        // blob download 
+        document.getElementById('btnBlob').addEventListener('click', function () {
+            AjaxDemoRepository.blob()
+               .then(blob => { 
+                  // 이미지를 출력한다. 
+                  let img = document.createElement('img');
+                  img.src = URL.createObjectURL(blob);
+                  document.getElementById('resultDiv').appendChild(img);
+               })
+               .catch(e => { 
+                   debugger; 
+                   console.log(e);
+               });
+        });
+
+        // timeout
+        document.getElementById('btnTimeout').addEventListener('click', function () {
+         AjaxDemoRepository.timeout()
+               .then(res => { 
+                  console.log(res); 
+               })
+               .catch(e => { 
+                   debugger; 
+                   console.log(e);
+               });
+
+        }); 
+        
+        // javascript
+         document.getElementById('btnScript').addEventListener('click', function () {
+            AjaxDemoRepository.javascript()
+             .then( stats => {
+                  console.log(stats);
+              })
+              .error( e => {
+                  console.log(e);
+              });
+         });
+
+    });
+
+
+</script>

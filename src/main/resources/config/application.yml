@@ -1,0 +1,254 @@
+# Application Info
+app-info:
+  name: HRM
+  version: 1.0 
+  description: HRM Application
+  author: Jirepos 
+  email: jirepos@gmail.com 
+  
+# Application Settings
+settings:
+  parameter-encryption: true # 파라미터 암호화 
+
+
+# Message Source 다국어 파일 
+# You must write array in application.yml like below:
+# Use comma. Do not use dash(-)
+i18n-message-files: translation/message,translation/common
+
+
+
+# Google
+google:
+  oauth:
+    application-name: jirepos-management  # 앱 이름
+    callback-url: "https://jirepos.com/demo/google/callback"  # 인증후 호출할 callback
+    client-id:  "91502393740-ri3h1i2e5p0nut33006q76u8eqhfpsj7.apps.googleusercontent.com"
+    client-secret: "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" 
+    token-path: "tokens" # 토큰 파일 저장 경로
+    save-folder: "E:/googledoc" # 구글 드라이브 파일 저장 경로
+    scopes:  # 인증에 필요한 스코프
+      - "https://www.googleapis.com/auth/calendar"
+      - "https://www.googleapis.com/auth/documents"
+      - "https://www.googleapis.com/auth/drive"
+      - "https://www.googleapis.com/auth/drive.file"
+      - "https://mail.google.com/"
+  workspace:
+    admin-user-id: "admin@gsuite.naonsoft.kr" # 워크스페이스 관리자 아이디
+    domain: "gsuite.naonsoft.kr" # 워크스페이스 도메인
+    service-account-email: "sanghyeon-svc-test02@sanghyeon-test.iam.gserviceaccount.com" # 서비스 어카운트 이메일 
+    service-key-file-path: "googleapi/naon-gsuite-test-2f1073bf8b1c.p12" # 서비스 키 파일 경로
+
+
+
+# GraphQL
+graphql:
+  servlet:
+    # Sets if GraphQL servlet should be created and exposed. If not specified defaults to "true".
+    enabled: true
+    # Sets the path where GraphQL servlet will be exposed. If not specified defaults to "/graphql"
+    mapping: /graphql
+    cors-enabled: true
+    cors:
+      allowed-origins: http://some.domain.com
+      allowed-methods: GET, HEAD, POST
+    # if you want to @ExceptionHandler annotation for custom GraphQLErrors
+    exception-handlers-enabled: true
+    context-setting: PER_REQUEST_WITH_INSTRUMENTATION
+    # Sets if asynchronous operations are supported for GraphQL requests. If not specified defaults to true.
+    async-mode-enabled: true
+
+
+# Embeded Tomcat Configuration 
+server:
+  port: 80
+  #port: 443
+  ssl:
+    enabled: false
+    key-alias: tomcat 
+    key-store: classpath:ssl/keystore.jks
+    key-store-password: jirepos
+  tomcat:
+    #basedir: /jirepos
+    threads:
+      max: 200    
+  servlet:
+    # 모든 Servlet Container 에는 default Servlet 이라는게 등록되어 있다.
+    # 실제로 tomcat 을 설치한 다음 conf 디렉토리 하위의 web.xml 을 열어보면 default Servlet 이 등록되어 있는것을 확인할 수 있다.
+    register-default-servlet: true
+  error:
+    include-exception: true  # 오류 응답에 exception 정보를 포함할지 여부 
+    include-message: always   # Response 에 Exception Message 를 표시할지 (never | always | on_param)
+    include-stacktrace: always # 오류 응답에 stacktrace 정보를 포함할지 여부, ALWAYS, NEVER, ON_ERROR_ONLY
+    #path: '/error'  # endpoint가 없는 경우 이 패스로 요청이 간다. 디폴트가 /error 이므로 설정할 필요는 없다. 
+    whitelabel:
+      # spring boot provides a standard error web page 
+      enabled: false 
+    #  server.error.path를 customize할 수 있다. 
+    
+
+# ---------------------------------------------------------
+# SpringBoot configuration
+# ---------------------------------------------------------
+spring:
+  # jackson
+  #spring.jackson.serialization.write-dates-as-timestamps=false
+  #jackson:
+    #serialization:
+      # java 8의 LocalDateTime이나 LocalDate를 사용하면 응답하는 MappingJackson2JsonView의 기본 json 결과는 다음과 같다.
+      # { "localDateSample" : [2016,7,8], "localDateTimeSample" : [2016,7,1,0,0] }
+      # 이것을 비활성화
+      # response datetime 처리 설정 
+      # 그러면 응답값은 
+      # { "localDateSample" : "2016-07-08", "localDateTimeSample" : "2016-07-31T00:00" }
+      # write-dates-as-timestamps: false
+    # LocalDate  및  LocalDateTime 과 같은 Java 8 날짜 유형에서는 작동하지 않습니다
+    # date-format: yyyy-MM-dd HH:mm:ss
+  # RabbitMQ 
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    cache:
+      channel:
+        size: 20		
+                
+  # Redis
+  redis:
+    host: localhost
+    port: 6379
+    password:  PASSword..00
+    timeout: 3000
+    
+  # batch:
+  #   # spring.batch.jdbc.initialize-schema
+  #   # spring.batch.job.enabled
+  #   job:
+  #     enabled: false
+  #   jdbc:
+  #     initialize-schema: always  # or never 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  main:
+    #spring.main.allow-bean-definition-overriding=true
+    # WAS의 디폴트서블릿을 활성화 하려면 true로 설정해야 함 
+    allow-bean-definition-overriding: true
+
+  mustache:
+    prefix: classpath:/templates/mustache/
+    suffix:   
+
+  freemarker:
+    suffix: .ftl
+    template-loader-path: classpath:/templates
+
+  mvc:
+    # 아래 설정을 하였지만 동작하지 않음 
+    throw-exception-if-no-handler-found: true     # NoHandlerFoundException을 발생시키고 handlerExcpetion에서 잡을 수 있도록
+    dispatch-options-request: false
+    # webapp 디렉터리를 만들어야 함, default 
+    # 아래 설정을 하면 jsp를 찾지 못함
+    view:
+      prefix: /WEB-INF/views
+      suffix: .jsp    
+    # Dispatcherservlet에서 정의한 설정을 따르므로 여기서는 주석처리한다. 
+    # static-path-pattern: /res/**       
+  web:
+    resources:
+      add-mappings: false # 적절한 handler를 찾지 못한 경우 , 정적리소스로 생각해 classpath로 던진다. 그런 예외를 막기위한 설정 
+      # 디폴트 정적 위치를 변경할 수 있다. 콤마로 구분하여 여러개를 지정할 수 있다.
+      # spring.resources.static-locations=classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/
+      # Dispatcherservlet에서 정의한 설정을 따르므로 여기서는 주석처리한다. 
+      # static-locations: 
+      #   - classpath:/static/ 
+      #   - classpath:/public/       
+
+
+
+
+
+# Rabbit MQ 
+mq-config:
+  push:
+    queue: push.queue
+    exchange: push.direct
+    routingkey: push.routingkey
+    minConcurrentConsumers: 4
+    #consumer 개수 (해당 큐가 사용할 Conusmer 최대 개수로 최대로 (서버의 논리 CPU Core * 2 = CPU 100%) 사용 가능, 서버에 다른 어플리케이션을 고려해야함)
+    maxConcurrentConsumers: 8
+    #하나의 Consumer당 큐에 꺼내서 한번에 메모리에 담아서 처리할 메시지 수
+    #첫번째 Consumer 부터 해당 개수만큼 메모리에 담기 때문에 높은값을 설정하면 모든 Consumer에 분배되지 않을수 있음.
+    #하나의 Consumer 에만 메시지가 분배된 경우 순차적으로 처리하기 때문에 처리가 느린 메시지가 있을 경우를 고려하여 설정
+    prefetch: 1
+
+# Logging
+logging:
+  file:
+    # path는 디렉터리 이름 
+    path: logs/app
+    pattern:
+      console: "%d %-5level %logger : %msg%n"
+      #file:  "%d %-5level [%thread] %logger : %msg%n"
+      rolling-file-name: sogood-app-%d{yyyy-MM-dd-HH-mm}.%i.log
+    max-size: 100MB
+    max-history: 10
+  level:
+    root: ERROR
+    org.springframework: ERROR
+    com.jirepo: DEBUG
+
+
+# For SQL Logging
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      logging: slf4j
+      tracing:
+        include-parameter-values: true
+      multiline: true 
+      #appender: com.p6spy.engine.spy.appender.StdoutLogger
+  show-prepard-sql: false
+  package-name: com.sogood 
+
+
+
+
+# Spring profiles 
+---
+spring:
+  profiles:
+    group:
+      # -Dspring.profiles.active=local 
+      # 위 환경설정은 common과 localdb 설정을 사용한다. 
+      local: common, localdb
+
+# Common Spring Profile
+---
+spring:
+  config:
+    # import를 사용하여 불러올 수 있다. 
+    # import: "classpath:/module1.yml,classpath:/module2.yml"
+    activate:
+      on-profile: common
+    import:
+      - classpath:/config/common/common-config.yml
+
+
+
+# 로컬 개발 환경을 위한 프로파일 
+# Spring profile for local development
+---
+spring:
+  config:
+    activate:
+      on-profile: localdb
+    import:
+      - classpath:/config/local/local-db-config.yml
+      - classpath:/config/local/local-env-config.yml
+
+

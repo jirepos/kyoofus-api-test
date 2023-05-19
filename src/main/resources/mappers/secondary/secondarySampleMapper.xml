@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jirepo.SecondarySampleMapper">
+
+    <!-- create table demo_mybatis_employee ( user_id varchar(20), user_name varchar(20) ) -->
+  <!-- <select id="selectAll" resultType="com.sogood.demo.vo.DemoMyBatisBean">
+    SELECT USER_NAME,
+           USER_ID
+    FROM DEMO_MYBATIS_EMPLOYEE
+  </select> -->
+  
+</mapper>

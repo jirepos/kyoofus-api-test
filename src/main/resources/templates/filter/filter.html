@@ -1,0 +1,47 @@
+<h1>Filter Demo</h1>
+<p>
+    "q?AS8Fcd9SXknDAS8Fcd9SXknDAS8Fcd9SXknD"과 같이 
+    URL과 Query String을 암호화하여 전달하면 
+    필터에서 복호화하여 파라미터를 추가하고, end point로 포워딩한다. 
+</p>
+
+<button id="btnJson">Get JSON</button>
+<br>
+<div>
+    <form action="/demo/filter/get-json" method="POST">
+        <input type="text" name="job" value="bike">
+        <input type="text" name="job" value="football">
+        <input type="text" name="job" value="baseball">
+        <label><input type="checkbox" name="color" value="blue" checked> Blue</label>
+        <label><input type="checkbox" name="color" value="red"> Red</label>
+        <input type="text" name="age" value="125">
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<script>
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+        let params = '/demo/filter/get-json?name=홍길동&age=20&job=사원&job=팀원';
+        let encodedParams = Base64.encode(params);
+        let btnHtml = document.querySelector('#btnJson');
+        btnHtml.addEventListener('click', () => {
+            let options = {
+                method: 'GET',
+                //url: '/demo/filter/get-json?q=' + encodedParams,
+                url: '/?q=' + encodedParams,
+                headers: {
+                    Accept: 'application/json', // 클라이언트가 이해 가능한 컨텐츠 타입이 무엇인지
+                    'Content-Type': 'application/json', // 서버에 어떤 형식의 데이터를 보내는지 알려줌
+                },
+            };
+            ajax(options)
+                .then((response) => {
+                    console.log(response);
+                    log(response);
+                })
+                .catch((error) => {});
+        }); //:
+    });
+</script>
